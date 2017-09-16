@@ -12,3 +12,10 @@ document.getElementsByTagName('input')[0].addEventListener("input", function() {
     }
 
 }, false);
+
+window.onload = function(){
+    changeImage("http://res.cloudinary.com/dwtlq1bra/image/upload/v1505593963/ufylekqzscvxbno0vls0.png");
+}
+function changeImage(url){
+    document.getElementById('imageView').src= url;
+}
