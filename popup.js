@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdown.addEventListener('change', () => {
       changeBackgroundColor(dropdown.value);
       saveBackgroundColor(url, dropdown.value);
+      console.log("hello");
     });
   });
 });
