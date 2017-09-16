@@ -15,4 +15,4 @@ setTimeout(function() {
       }, 'json');
     })
   });
-}, 10000);
+}, 30000);

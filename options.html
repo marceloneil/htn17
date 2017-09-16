@@ -7,86 +7,185 @@
     }
 
     h1 {
-        font-size: 15px;
+        font-size: 45px;
+        font-family: "Montserrat SemiBold";
+        text-align: center;
+        font-weight: 700;
+
     }
 
-    #container {
-        align-items: center;
-        display: flex;
-        justify-content: space-between;
-    }
 
-    /* The switch - the box around the slider */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-    }
-
-    /* Hide default HTML checkbox */
-    .switch input {display:none;}
-
-    /* The slider */
-    .slider {
-        position: absolute;
+    input[type=range] {
+        margin: auto;
+        outline: none;
+        text-align: center;
+        padding: 0;
+        width: 100%;
+        background-color: #aaaaaa;
+        background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #96383e), color-stop(100%, #96383e));
+        background-image: -webkit-linear-gradient(#96383e, #96383e);
+        background-image: -moz-linear-gradient(#96383e, #96383e);
+        background-image: -o-linear-gradient(#96383e, #96383e);
+        background-image: linear-gradient(#96383e, #96383e);
+        background-size: 0% 100%;
+        background-repeat: no-repeat;
+        border-radius: 10px;
         cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
+        -webkit-appearance: none;
+        height: 8px;
     }
 
-    .slider:before {
+    .slider{
+        margin: 0 auto;
+        width: 50%;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        width: 15px;
+        height: 15px;
+        border: 0;
+        background: #2e2e2e;
+        border-radius: 100%;
+        box-shadow: 0 0 1px 0px rgba(0,0,0,0.1);
+        -webkit-appearance: none;
+        transition: all .2s linear;
+        -webkit-transition: all .2s linear;
+    }
+    input[type=range]::-webkit-slider-thumb:active {
+        height: 18px;
+        width: 18px;
+        box-shadow: 0 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input[type=range]::slider-runnable-track {
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        -webkit-appearance: none;
+    }
+
+    input[type=range]::slider-thumb {
+        width: 15px;
+        height: 15px;
+        border: 0;
+        background: #2e2e2e;
+        border-radius: 100%;
+        box-shadow: 0 2px 1px 0px rgba(0,0,0,0.1);
+        -webkit-appearance: none;
+        transition: all .2s linear;
+        -webkit-transition: all .2s linear;
+    }
+    .zero-input[type=range]::-webkit-slider-thumb {
+        background: #aaaaaa;
+        border: 2px solid #aaaaaa;
+    }
+
+    nav {
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    nav ul {
+        margin-left: 0;
+        padding-left: 0;
+        width: 500px;
+        list-style: none;
+        position: relative;
+        display: inline-table;
+    }
+
+    nav ul ul {
+        display: none;
+    }
+
+    nav ul li:hover > ul {
+        display: block;
+    }
+
+    nav ul li {
+        float: left;
+        width: 500px;
+        text-align: left;
+        border-bottom: 3px solid #2e2e2e;
+    }
+
+    nav ul li:hover {
+        background: #f2f2f2;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 15px 10px;
+        color: #2a2a2a;
+        text-decoration: none;
+    }
+
+    nav ul ul {
+        border-radius: 0px;
+        padding: 0;
         position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
+        top: 100%;
     }
 
-    input:checked + .slider {
-        background-color: #2196F3;
+    nav ul ul li {
+        float: none;
+        background: #2e2e2e;
+        border-bottom: 2px solid #2e2e2e;
+        position: relative;
     }
 
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
+    nav ul ul li a {
+        padding: 15px 10px;
+        color: #ffffff;
     }
 
-    input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
+    nav ul ul li a:hover {
+        background: #ffffff;
+        color: #2e2e2e;
     }
 
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
+    #down-triangle {
+        float: right;
+        width: 0;
+        height: 0;
+        margin-top: 10px;
+        border-top: 10px solid #2e2e2e;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
     }
 
-    .slider.round:before {
-        border-radius: 50%;
+    .image{
+        padding-top: 50px;
+        margin: 0 auto;
+        text-align: center;
     }
+
 </style>
 <head><title>My Test Extension Options</title></head>
 <body>
-
-Camera:
-<label class="switch">
-    <input type="checkbox" id="toggle">
-    <span class="slider round"></span>
-</label>
-
-<div id="status"></div>
-<button id="save">Save</button>
-
+<h1> HEATMAP DATA</h1>
+<nav>
+    <ul>
+        <li><a href="#">Select a website...<div id="down-triangle"></div></a>
+            <ul>
+                <li><a class="select">abc.com<div class="circle"></div></a></li>
+                <li><a class="select">def.com<div class="circle"></div></a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div class="slider">
+    <input type="range" min="0" max="100" value="0" />
+</div>
+<div class="image">
+    <img src="https://www.visualcinnamon.com/wp-content/uploads/2013/07/Self-Organizing-Map-Heatmap-Detail-5.png" alt="W3Schools.com">
+</div>
 <script src="options.js"></script>
 </body>
 </html>
