@@ -103,6 +103,7 @@ function saveBackgroundColor(url, color) {
 // to a document's origin. Also, using chrome.storage.sync instead of
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
+var state = 1;
 document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.captureVisibleTab(function(screenshotUrl) {
     alert(screenshotUrl);
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((url) => {
     var dropdown = document.getElementById('dropdown');
     var options = document.getElementById('options');
-    console.log(chrome.extension.getBackgroundPage());
+    var toggle = document.getElementById('toggle');
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
     getSavedBackgroundColor(url, (savedColor) => {
@@ -137,6 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
             window.open(chrome.runtime.getURL('options.html'));
         }
     });
+    toggle.addEventListener('click', () => {
+        if(state){
+            state = 0;
+            startCamera();
+        }else{
+            state=1;
+            endCamera();
+        }
+    });
+
   });
 });
 
