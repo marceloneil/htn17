@@ -28,7 +28,7 @@ window.onload = function() {
   var height = 240;
   var topDist = '0px';
   var leftDist = '0px';
-  
+
   var setup = function() {
       var video = document.getElementById('webgazerVideoFeed');
       video.style.display = 'block';
@@ -76,6 +76,9 @@ window.onload = function() {
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.get === 'data') {
+      data.screenWidth = window.screen.availWidth;
+      data.docHeight = document.body.scrollHeight;
+      data.pageUrl = window.location.href;
       sendResponse(data);
     } else if (request.image) {
       console.log(image);
@@ -86,5 +89,5 @@ window.onload = function() {
 
 window.onbeforeunload = function() {
     //webgazer.end(); //Uncomment if you want to save the data even if you reload the page.
-    window.localStorage.clear(); //Comment out if you want to save data across different sessions 
+    window.localStorage.clear(); //Comment out if you want to save data across different sessions
 }
