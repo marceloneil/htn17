@@ -2,24 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
+ /**
  * Get the current URL.
  *
  * @param {function(string)} callback called when the URL of the current tab
  *   is found.
  */
-
- webgazer.setGazeListener(function(data, elapsedTime) {
-     if (data == null) {
-         return;
-     }
-     var xprediction = data.x; //these x coordinates are relative to the viewport
-     var yprediction = data.y; //these y coordinates are relative to the viewport
-     console.log(xprediction);
-     console.log(yprediction);
-     //console.log(elapsedTime); //elapsed time is based on time since begin was called
- }).begin();
- 
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
