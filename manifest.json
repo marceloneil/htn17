@@ -11,7 +11,9 @@
   },
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "videoCapture",
+    "audioCapture"
   ],
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"

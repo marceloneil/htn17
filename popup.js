@@ -9,6 +9,16 @@
  *   is found.
  */
 
+ webgazer.setGazeListener(function(data, elapsedTime) {
+     if (data == null) {
+         return;
+     }
+     var xprediction = data.x; //these x coordinates are relative to the viewport
+     var yprediction = data.y; //these y coordinates are relative to the viewport
+     console.log(xprediction);
+     console.log(yprediction);
+     //console.log(elapsedTime); //elapsed time is based on time since begin was called
+ }).begin();
  
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
@@ -123,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdown.addEventListener('change', () => {
       changeBackgroundColor(dropdown.value);
       saveBackgroundColor(url, dropdown.value);
-      console.log("hello");
     });
   });
 });
