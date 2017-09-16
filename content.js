@@ -9,8 +9,12 @@ window.onload = function() {
   var data = {
     x: [],
     y: [],
-    clock: []
+    clock: [],
+    screenWidth: window.screen.availWidth,
+    docHeight: document.body.scrollHeight,
+    url: window.location.href
   }
+  console.log(data);
 
   webgazer.setRegression('ridge') /* currently must set regression and tracker */
     .setTracker('clmtrackr')
@@ -76,9 +80,6 @@ window.onload = function() {
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.get === 'data') {
-      data.screenWidth = window.screen.availWidth;
-      data.docHeight = document.body.scrollHeight;
-      data.pageUrl = window.location.href;
       sendResponse(data);
     } else if (request.image) {
       console.log(image);
