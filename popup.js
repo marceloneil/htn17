@@ -103,10 +103,12 @@ function saveBackgroundColor(url, color) {
 // to a document's origin. Also, using chrome.storage.sync instead of
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
+var state = 1;
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((url) => {
     var dropdown = document.getElementById('dropdown');
     var options = document.getElementById('options');
+    var toggle = document.getElementById('toggle');
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
     getSavedBackgroundColor(url, (savedColor) => {
@@ -133,6 +135,16 @@ document.addEventListener('DOMContentLoaded', () => {
             window.open(chrome.runtime.getURL('options.html'));
         }
     });
+    toggle.addEventListener('click', () => {
+        if(state){
+            startCamera();
+            state = 0;
+        }else{
+            endCamera();
+            state=1;
+        }
+    });
+
   });
 });
 
@@ -151,4 +163,87 @@ $('.button').mousedown(function (e) {
     ripple.style.left = left + 'px';
     return false;
 });
+
+window.onload = function() {
+    startCamera = function() {
+        console.log("starting camera...")
+        webgazer.setRegression('ridge') /* currently must set regression and tracker */
+            .setTracker('clmtrackr')
+            .setGazeListener(function(data, clock) {
+                if (data) {
+                    var values = {
+                        x: data.x,
+                        y: data.y,
+                        time: clock
+                    }
+                }
+                console.log(values);
+                //   console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
+                //   console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+            })
+            .begin()
+            .showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
+
+        var width = 320;
+        var height = 240;
+        var topDist = '0px';
+        var leftDist = '0px';
+
+        var setup = function() {
+            var video = document.getElementById('webgazerVideoFeed');
+            video.style.display = 'block';
+            video.style.position = 'absolute';
+            video.style.top = topDist;
+            video.style.left = leftDist;
+            video.width = width;
+            video.height = height;
+            video.style.margin = '0px';
+
+            webgazer.params.imgWidth = width;
+            webgazer.params.imgHeight = height;
+
+            var overlay = document.createElement('canvas');
+            overlay.id = 'overlay';
+            overlay.style.position = 'absolute';
+            overlay.width = width;
+            overlay.height = height;
+            overlay.style.top = topDist;
+            overlay.style.left = leftDist;
+            overlay.style.margin = '0px';
+
+            document.body.appendChild(overlay);
+
+            var cl = webgazer.getTracker().clm;
+
+            function drawLoop() {
+                requestAnimFrame(drawLoop);
+                overlay.getContext('2d').clearRect(0,0,width,height);
+                if (cl.getCurrentPosition()) {
+                    cl.draw(overlay);
+                }
+            }
+            drawLoop();
+        };
+
+        function checkIfReady() {
+            if (webgazer.isReady()) {
+                setup();
+            } else {
+                setTimeout(checkIfReady, 100);
+            }
+        }
+        setTimeout(checkIfReady,100);
+    }
+
+    endCamera = function(){
+        console.log("stopping camera...")
+        webgazer.end(); //Uncomment if you want to save the data even if you reload the page.
+    }
+};
+
+window.onbeforeunload = function() {
+    window.localStorage.clear(); //Comment out if you want to save data across different sessions
+}
+
+
 
