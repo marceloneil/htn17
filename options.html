@@ -21,7 +21,7 @@
         text-align: center;
         padding: 0;
         width: 100%;
-        background-color: #CCC;
+        background-color: #aaaaaa;
         background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #96383e), color-stop(100%, #96383e));
         background-image: -webkit-linear-gradient(#96383e, #96383e);
         background-image: -moz-linear-gradient(#96383e, #96383e);
@@ -82,20 +82,110 @@
         -webkit-transition: all .2s linear;
     }
     .zero-input[type=range]::-webkit-slider-thumb {
-        background: #FFF;
-        border: 2px solid #BBB;
+        background: #aaaaaa;
+        border: 2px solid #aaaaaa;
     }
+
+    nav {
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    nav ul {
+        margin-left: 0;
+        padding-left: 0;
+        width: 500px;
+        list-style: none;
+        position: relative;
+        display: inline-table;
+    }
+
+    nav ul ul {
+        display: none;
+    }
+
+    nav ul li:hover > ul {
+        display: block;
+    }
+
+    nav ul li {
+        float: left;
+        width: 500px;
+        text-align: left;
+        border-bottom: 3px solid #2e2e2e;
+    }
+
+    nav ul li:hover {
+        background: #f2f2f2;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 15px 10px;
+        color: #2a2a2a;
+        text-decoration: none;
+    }
+
+    nav ul ul {
+        border-radius: 0px;
+        padding: 0;
+        position: absolute;
+        top: 100%;
+    }
+
+    nav ul ul li {
+        float: none;
+        background: #2e2e2e;
+        border-bottom: 2px solid #2e2e2e;
+        position: relative;
+    }
+
+    nav ul ul li a {
+        padding: 15px 10px;
+        color: #ffffff;
+    }
+
+    nav ul ul li a:hover {
+        background: #ffffff;
+        color: #2e2e2e;
+    }
+
+    #down-triangle {
+        float: right;
+        width: 0;
+        height: 0;
+        margin-top: 10px;
+        border-top: 10px solid #2e2e2e;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+    }
+
+    .image{
+        padding-top: 50px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
 </style>
 <head><title>My Test Extension Options</title></head>
 <body>
 <h1> HEATMAP DATA</h1>
+<nav>
+    <ul>
+        <li><a href="#">Select a website...<div id="down-triangle"></div></a>
+            <ul>
+                <li><a class="select">abc.com<div class="circle"></div></a></li>
+                <li><a class="select">def.com<div class="circle"></div></a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
 <div class="slider">
     <input type="range" min="0" max="100" value="0" />
 </div>
-
-<div id="status"></div>
-<button id="save">Save</button>
-
+<div class="image">
+    <img src="https://www.visualcinnamon.com/wp-content/uploads/2013/07/Self-Organizing-Map-Heatmap-Detail-5.png" alt="W3Schools.com">
+</div>
 <script src="options.js"></script>
 </body>
 </html>
