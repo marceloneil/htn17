@@ -9,8 +9,12 @@ window.onload = function() {
   var data = {
     x: [],
     y: [],
-    clock: []
+    clock: [],
+    screenWidth: window.screen.availWidth,
+    docHeight: document.body.scrollHeight,
+    url: window.location.href
   }
+  console.log(data);
 
   webgazer.setRegression('ridge') /* currently must set regression and tracker */
     .setTracker('clmtrackr')
@@ -28,7 +32,7 @@ window.onload = function() {
   var height = 240;
   var topDist = '0px';
   var leftDist = '0px';
-  
+
   var setup = function() {
       var video = document.getElementById('webgazerVideoFeed');
       video.style.display = 'block';
@@ -86,5 +90,5 @@ window.onload = function() {
 
 window.onbeforeunload = function() {
     //webgazer.end(); //Uncomment if you want to save the data even if you reload the page.
-    window.localStorage.clear(); //Comment out if you want to save data across different sessions 
+    window.localStorage.clear(); //Comment out if you want to save data across different sessions
 }

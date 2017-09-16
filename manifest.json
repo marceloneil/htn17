@@ -27,7 +27,7 @@
   }],
 
   "background": {
-    "scripts": ["node_modules/superagent/superagent.js", "event.js"],
+    "scripts": ["jquery.js", "event.js"],
     "persistent": false
   },
 

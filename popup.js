@@ -106,7 +106,7 @@ function saveBackgroundColor(url, color) {
 var state = 1;
 document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-    alert(screenshotUrl);
+    //alert(screenshotUrl);
   })
   getCurrentTabUrl((url) => {
     var dropdown = document.getElementById('dropdown');
@@ -166,4 +166,3 @@ document.addEventListener('DOMContentLoaded', () => {
 //     ripple.style.left = left + 'px';
 //     return false;
 // });
-
