@@ -8,11 +8,19 @@
 
 setTimeout(function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {get: 'data'}, function(response) {
-      console.log(response);
-      $.post('https://htn17-processing-kshen3778.c9users.io/createHeatMap', response, function(data) {
-        console.log(data)
-      }, 'json');
+    chrome.tabs.sendMessage(tabs[0].id, {get: 'data'}, function(data) {
+      $.ajax({
+        type: 'POST',
+        url: 'https://htn17-processing-kshen3778.c9users.io/createHeatMap',
+        data: JSON.stringify(data),
+        success: success,
+        contentType: "application/json",
+        dataType: 'json'
+      });
+
+      function success(response) {
+        console.log(response);
+      }
     })
   });
 }, 10000);
