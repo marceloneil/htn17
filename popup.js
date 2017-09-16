@@ -2,24 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
+ /**
  * Get the current URL.
  *
  * @param {function(string)} callback called when the URL of the current tab
  *   is found.
  */
-
- webgazer.setGazeListener(function(data, elapsedTime) {
-     if (data == null) {
-         return;
-     }
-     var xprediction = data.x; //these x coordinates are relative to the viewport
-     var yprediction = data.y; //these y coordinates are relative to the viewport
-     console.log(xprediction);
-     console.log(yprediction);
-     //console.log(elapsedTime); //elapsed time is based on time since begin was called
- }).begin();
- 
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
@@ -118,13 +106,14 @@ function saveBackgroundColor(url, color) {
 document.addEventListener('DOMContentLoaded', () => {
   getCurrentTabUrl((url) => {
     var dropdown = document.getElementById('dropdown');
-
+    var options = document.getElementById('options');
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
     getSavedBackgroundColor(url, (savedColor) => {
       if (savedColor) {
         changeBackgroundColor(savedColor);
         dropdown.value = savedColor;
+
       }
     });
 
@@ -134,5 +123,32 @@ document.addEventListener('DOMContentLoaded', () => {
       changeBackgroundColor(dropdown.value);
       saveBackgroundColor(url, dropdown.value);
     });
+    options.addEventListener('click', () => {
+        console.log("xfer");
+        if (chrome.runtime.openOptionsPage) {
+            // New way to open options pages, if supported (Chrome 42+).
+            chrome.runtime.openOptionsPage();
+        } else {
+            // Reasonable fallback.
+            window.open(chrome.runtime.getURL('options.html'));
+        }
+    });
   });
 });
+
+$('.button').mousedown(function (e) {
+    var target = e.target;
+    var rect = target.getBoundingClientRect();
+    var ripple = target.querySelector('.ripple');
+    $(ripple).remove();
+    ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.height = ripple.style.width = Math.max(rect.width, rect.height) + 'px';
+    target.appendChild(ripple);
+    var top = e.pageY - rect.top - ripple.offsetHeight / 2 -  document.body.scrollTop;
+    var left = e.pageX - rect.left - ripple.offsetWidth / 2 - document.body.scrollLeft;
+    ripple.style.top = top + 'px';
+    ripple.style.left = left + 'px';
+    return false;
+});
+

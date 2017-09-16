@@ -10738,6 +10738,7 @@ var mosseFilterResponses = function() {
                         init(window.URL.createObjectURL(stream));
                     },
                     function(e){
+                        console.log(e);
                         onFail();
                         videoElement = null;
                     });
