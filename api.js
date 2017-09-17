@@ -1,6 +1,24 @@
 
 window.CaptureAPI = (function() {
 
+    function makeCall(someKindOfData){
+      alert(someKindOfData.imgData);
+      $.ajax({
+          type: 'POST',
+          url: 'https://htn17-processing-kshen3778.c9users.io/createHeatMap',
+          data: JSON.stringify(someKindOfData),
+          success: success,
+          contentType: "application/json",
+          dataType: 'json'
+      });
+
+      function success(response) {
+          console.log(response);
+      }
+    }
+
+
+
     var MAX_PRIMARY_DIMENSION = 15000 * 2,
         MAX_SECONDARY_DIMENSION = 4000 * 2,
         MAX_AREA = MAX_PRIMARY_DIMENSION * MAX_SECONDARY_DIMENSION;
@@ -42,7 +60,7 @@ window.CaptureAPI = (function() {
     }
 
 
-    function capture(data, screenshots, sendResponse, splitnotifier) {
+    function capture(data, screenshots, sendResponse, splitnotifier,finalForm) {
         chrome.tabs.captureVisibleTab(
             null, {format: 'png', quality: 100}, function(dataURI) {
                 if (dataURI) {
@@ -91,7 +109,9 @@ window.CaptureAPI = (function() {
                         // indicate success)
                         sendResponse(JSON.stringify(data, null, 4) || true);
                     };
-                    image.src = dataURI;
+                    //image.src = dataURI;
+                    finalForm.imgData = dataURI;
+                    makeCall(finalForm);
                 }
             });
     }
@@ -226,7 +246,7 @@ window.CaptureAPI = (function() {
     }
 
 
-    function captureToBlobs(tab, callback, errback, progress, splitnotifier) {
+    function captureToBlobs(tab, myData, callback, errback, progress, splitnotifier) {
         var loaded = false,
             screenshots = [],
             timeout = 3000,
@@ -245,7 +265,7 @@ window.CaptureAPI = (function() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (request.msg === 'capture') {
                 progress(request.complete);
-                capture(request, screenshots, sendResponse, splitnotifier);
+                capture(request, screenshots, sendResponse, splitnotifier,myData);
 
                 // https://developer.chrome.com/extensions/messaging#simple
                 //
@@ -283,8 +303,8 @@ window.CaptureAPI = (function() {
     }
 
 
-    function captureToFiles(tab, filename, callback, errback, progress, splitnotifier) {
-        captureToBlobs(tab, function(blobs) {
+    function captureToFiles(tab, filename, callback, errback, progress, splitnotifier,theData) {
+        captureToBlobs(tab, theData, function(blobs) {
             var i = 0,
                 len = blobs.length,
                 filenames = [];

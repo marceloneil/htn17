@@ -103,7 +103,6 @@ function saveBackgroundColor(url, color) {
 // to a document's origin. Also, using chrome.storage.sync instead of
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
-var state = 1;
 document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.captureVisibleTab(function(screenshotUrl) {
     //alert(screenshotUrl);
@@ -112,6 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
     var dropdown = document.getElementById('dropdown');
     var options = document.getElementById('options');
     var toggle = document.getElementById('toggle');
+    var state = false;
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {get: "state"}, function(response) {
+            state = response;
+            document.getElementById("toggle").checked = state;
+            console.log(state);
+        });
+    });
+
+
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
     getSavedBackgroundColor(url, (savedColor) => {
@@ -139,12 +148,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     toggle.addEventListener('click', () => {
-        if(state){
-            state = 0;
-            startCamera();
+        console.log("click");
+        if(!state){
+            state = true;
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {get: "start"}, function(response) {
+                    console.log(response.message)
+                });
+
+            });
         }else{
-            state=1;
-            endCamera();
+            state = false;
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {get: "stop"}, function(response) {
+                    console.log(response.message);
+                    if(response.message){
+                        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                            chrome.tabs.sendMessage(tabs[0].id, {get: 'data'}, function(data) {
+                              takeScreenshot(data);
+                            })
+                        });
+                    }
+                });
+            });
         }
     });
 
@@ -225,13 +251,13 @@ function _displayCapture(filenames, index) {
             resultWindowId = win.id;
         });
     } else {
-        chrome.tabs.create({
+        /*chrome.tabs.create({
             url: filename,
             active: last,
             windowId: resultWindowId,
             openerTabId: currentTab.id,
             index: (currentTab.incognito ? 0 : currentTab.index) + 1 + index
-        });
+        });*/
     }
 
     if (!last) {
@@ -272,7 +298,7 @@ var resetCapture = function(){
     captureF = true;
   },10000);
 }
-var takeScreenshot = function(){
+var takeScreenshot = function(theData){
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     if(captureF){
       //captureF = false;
@@ -282,11 +308,10 @@ var takeScreenshot = function(){
 
       var filename = getFilename(tab.url);
       CaptureAPI.captureToFiles(tab, filename, displayCaptures,
-                                errorHandler, progress, splitnotifier);
+                                errorHandler, progress, splitnotifier, theData);
     }
   });
 }
-
 
 
 // $('.button').mousedown(function (e) {
