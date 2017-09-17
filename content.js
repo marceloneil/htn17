@@ -99,6 +99,8 @@ function cameraOn() {
 function cameraOff() {
   state = false;
   webgazer.end();
+  document.getElementById('overlay').remove()
+  document.getElementById('gazedot').remove()
   data.x = [];
   data.y = [];
   data.clock = [];
