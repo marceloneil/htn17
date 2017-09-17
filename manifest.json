@@ -26,10 +26,6 @@
     "js": ["webgazer.js", "content.js", "firebase.js"]
   }],
 
-  "background": {
-    "scripts": ["jquery.js", "event.js"],
-    "persistent": false
-  },
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {

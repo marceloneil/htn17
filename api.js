@@ -1,33 +1,4 @@
-
-window.CaptureAPI = (function() {
-
-    function makeCall(someKindOfData){
-
-      //alert(someKindOfData.imgData);
-      alert(someKindOfData.x);
-      alert(someKindOfData.y);
-      alert(someKindOfData.clock);
-      alert(someKindOfData.url);
-
-      var http = new XMLHttpRequest();
-      var url = "https://htn17-processing-kshen3778.c9users.io/createHeatMap";
-
-
-      http.open("POST", url, true);
-      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      http.send(JSON.stringify(someKindOfData));
-
-/*
-      $.ajax({
-          type: 'POST',
-          url: 'https://htn17-processing-kshen3778.c9users.io/createHeatMap',
-          data: JSON.stringify(someKindOfData),
-          contentType: "application/json",
-          dataType: 'json'
-      });*/
-    }
-
-
+window.CaptureAPI = (function () {
 
     var MAX_PRIMARY_DIMENSION = 15000 * 2,
         MAX_SECONDARY_DIMENSION = 4000 * 2,
@@ -62,7 +33,9 @@ window.CaptureAPI = (function() {
 
 
     function initiateCapture(tab, callback) {
-        chrome.tabs.sendMessage(tab.id, {msg: 'scrollPage'}, function() {
+        chrome.tabs.sendMessage(tab.id, {
+            msg: 'scrollPage'
+        }, function () {
             // We're done taking snapshots of all parts of the window. Display
             // the resulting full screenshot images in a new browser tab.
             callback();
@@ -70,13 +43,20 @@ window.CaptureAPI = (function() {
     }
 
 
-    function capture(data, screenshots, sendResponse, splitnotifier,finalForm) {
+    function capture(data, screenshots, sendResponse) {
         chrome.tabs.captureVisibleTab(
-            null, {format: 'png', quality: 100}, function(dataURI) {
+            null, {
+                format: 'png',
+                quality: 100
+            },
+            function (dataURI) {
                 if (dataURI) {
                     var image = new Image();
-                    image.onload = function() {
-                        data.image = {width: image.width, height: image.height};
+                    image.onload = function () {
+                        data.image = {
+                            width: image.width,
+                            height: image.height
+                        };
 
                         // given device mode emulation or zooming, we may end up with
                         // a different sized image than expected, so let's adjust to
@@ -97,9 +77,6 @@ window.CaptureAPI = (function() {
                                 _initScreenshots(data.totalWidth, data.totalHeight)
                             );
                             if (screenshots.length > 1) {
-                                if (splitnotifier) {
-                                    splitnotifier();
-                                }
                                 $('screenshot-count').innerText = screenshots.length;
                             }
                         }
@@ -107,7 +84,7 @@ window.CaptureAPI = (function() {
                         // draw it on matching screenshot canvases
                         _filterScreenshots(
                             data.x, data.y, image.width, image.height, screenshots
-                        ).forEach(function(screenshot) {
+                        ).forEach(function (screenshot) {
                             screenshot.ctx.drawImage(
                                 image,
                                 data.x - screenshot.left,
@@ -119,9 +96,7 @@ window.CaptureAPI = (function() {
                         // indicate success)
                         sendResponse(JSON.stringify(data, null, 4) || true);
                     };
-                    //image.src = dataURI;
-                    finalForm.imgData = dataURI;
-                    makeCall(finalForm);
+                    image.src = dataURI;
                 }
             });
     }
@@ -134,13 +109,13 @@ window.CaptureAPI = (function() {
         // because Chrome won't generate an image otherwise.
         //
         var badSize = (totalHeight > MAX_PRIMARY_DIMENSION ||
-                       totalWidth > MAX_PRIMARY_DIMENSION ||
-                       totalHeight * totalWidth > MAX_AREA),
+                totalWidth > MAX_PRIMARY_DIMENSION ||
+                totalHeight * totalWidth > MAX_AREA),
             biggerWidth = totalWidth > totalHeight,
             maxWidth = (!badSize ? totalWidth :
-                        (biggerWidth ? MAX_PRIMARY_DIMENSION : MAX_SECONDARY_DIMENSION)),
+                (biggerWidth ? MAX_PRIMARY_DIMENSION : MAX_SECONDARY_DIMENSION)),
             maxHeight = (!badSize ? totalHeight :
-                         (biggerWidth ? MAX_SECONDARY_DIMENSION : MAX_PRIMARY_DIMENSION)),
+                (biggerWidth ? MAX_SECONDARY_DIMENSION : MAX_PRIMARY_DIMENSION)),
             numCols = Math.ceil(totalWidth / maxWidth),
             numRows = Math.ceil(totalHeight / maxHeight),
             row, col, canvas, left, top;
@@ -152,9 +127,9 @@ window.CaptureAPI = (function() {
             for (col = 0; col < numCols; col++) {
                 canvas = document.createElement('canvas');
                 canvas.width = (col == numCols - 1 ? totalWidth % maxWidth || maxWidth :
-                                maxWidth);
+                    maxWidth);
                 canvas.height = (row == numRows - 1 ? totalHeight % maxHeight || maxHeight :
-                                 maxHeight);
+                    maxHeight);
 
                 left = col * maxWidth;
                 top = row * maxHeight;
@@ -183,18 +158,20 @@ window.CaptureAPI = (function() {
         //
         var imgRight = imgLeft + imgWidth,
             imgBottom = imgTop + imgHeight;
-        return screenshots.filter(function(screenshot) {
+        return screenshots.filter(function (screenshot) {
             return (imgLeft < screenshot.right &&
-                    imgRight > screenshot.left &&
-                    imgTop < screenshot.bottom &&
-                    imgBottom > screenshot.top);
+                imgRight > screenshot.left &&
+                imgTop < screenshot.bottom &&
+                imgBottom > screenshot.top);
         });
     }
 
 
     function getBlobs(screenshots) {
-        return screenshots.map(function(screenshot) {
+        console.log(screenshots);
+        return screenshots.map(function (screenshot) {
             var dataURI = screenshot.canvas.toDataURL();
+            // console.log(dataURI);
 
             // convert base64 to raw binary data held in a string
             // doesn't handle URLEncoded DataURIs
@@ -211,71 +188,37 @@ window.CaptureAPI = (function() {
             }
 
             // create a blob for writing to a file
-            var blob = new Blob([ab], {type: mimeString});
+            var blob = new Blob([ab], {
+                type: mimeString
+            });
+            alert(blob);
             return blob;
         });
     }
 
-
-    function saveBlob(blob, filename, index, callback, errback) {
-        filename = _addFilenameSuffix(filename, index);
-
-        function onwriteend() {
-            // open the file that now contains the blob - calling
-            // `openPage` again if we had to split up the image
-            var urlName = ('filesystem:chrome-extension://' +
-                           chrome.i18n.getMessage('@@extension_id') +
-                           '/temporary/' + filename);
-
-            callback(urlName);
-        }
-
-        // come up with file-system size with a little buffer
-        var size = blob.size + (1024 / 2);
-
-        // create a blob for writing to a file
-        var reqFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-        reqFileSystem(window.TEMPORARY, size, function(fs){
-            fs.root.getFile(filename, {create: true}, function(fileEntry) {
-                fileEntry.createWriter(function(fileWriter) {
-                    fileWriter.onwriteend = onwriteend;
-                    fileWriter.write(blob);
-                }, errback); // TODO - standardize error callbacks?
-            }, errback);
-        }, errback);
+    function getBase64(screenshots) {
+        return screenshots.map(function (screenshot) {
+            return screenshot.canvas.toDataURL();
+        });
     }
 
-
-    function _addFilenameSuffix(filename, index) {
-        if (!index) {
-            return filename;
-        }
-        var sp = filename.split('.');
-        var ext = sp.pop();
-        return sp.join('.') + '-' + (index + 1) + '.' + ext;
-    }
-
-
-    function captureToBlobs(tab, myData, callback, errback, progress, splitnotifier) {
+    function captureToBase64(tab, callback) {
         var loaded = false,
             screenshots = [],
             timeout = 3000,
             timedOut = false,
-            noop = function() {};
+            noop = function () {};
 
         callback = callback || noop;
-        errback = errback || noop;
-        progress = progress || noop;
 
         if (!isValidUrl(tab.url)) {
-            errback('invalid url'); // TODO errors
+            callback('invalid url'); // TODO errors
         }
 
         // TODO will this stack up if run multiple times? (I think it will get cleared?)
-        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if (request.msg === 'capture') {
-                progress(request.complete);
-                capture(request, screenshots, sendResponse, splitnotifier,myData);
+                capture(request, screenshots, sendResponse);
 
                 // https://developer.chrome.com/extensions/messaging#simple
                 //
@@ -285,54 +228,91 @@ window.CaptureAPI = (function() {
                 return true;
             } else {
                 console.error('Unknown message received from content script: ' + request.msg);
-                errback('internal error');
+                callback('internal error');
                 return false;
             }
         });
 
-        chrome.tabs.executeScript(tab.id, {file: 'page.js'}, function() {
+        chrome.tabs.executeScript(tab.id, {
+            file: 'page.js'
+        }, function () {
             if (timedOut) {
                 console.error('Timed out too early while waiting for ' +
-                              'chrome.tabs.executeScript. Try increasing the timeout.');
+                    'chrome.tabs.executeScript. Try increasing the timeout.');
             } else {
                 loaded = true;
-                progress(0);
 
-                initiateCapture(tab, function() {
-                    callback(getBlobs(screenshots));
+                initiateCapture(tab, function () {
+                    callback(null, getBase64(screenshots));
                 });
             }
         });
 
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             if (!loaded) {
                 timedOut = true;
-                errback('execute timeout');
+                callback('execute timeout');
             }
         }, timeout);
     }
 
+    function captureToBlobs(tab, callback) {
+        var loaded = false,
+            screenshots = [],
+            timeout = 3000,
+            timedOut = false,
+            noop = function () {};
 
-    function captureToFiles(tab, filename, callback, errback, progress, splitnotifier,theData) {
-        captureToBlobs(tab, theData, function(blobs) {
-            var i = 0,
-                len = blobs.length,
-                filenames = [];
+        callback = callback || noop;
 
-            (function doNext() {
-                saveBlob(blobs[i], filename, i, function(filename) {
-                    i++;
-                    filenames.push(filename);
-                    i >= len ? callback(filenames) : doNext();
-                }, errback);
-            })();
-        }, errback, progress, splitnotifier);
+        if (!isValidUrl(tab.url)) {
+            callback('invalid url'); // TODO errors
+        }
+
+        // TODO will this stack up if run multiple times? (I think it will get cleared?)
+        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+            if (request.msg === 'capture') {
+                capture(request, screenshots, sendResponse);
+
+                // https://developer.chrome.com/extensions/messaging#simple
+                //
+                // If you want to asynchronously use sendResponse, add return true;
+                // to the onMessage event handler.
+                //
+                return true;
+            } else {
+                console.error('Unknown message received from content script: ' + request.msg);
+                callback('internal error');
+                return false;
+            }
+        });
+
+        chrome.tabs.executeScript(tab.id, {
+            file: 'page.js'
+        }, function () {
+            if (timedOut) {
+                console.error('Timed out too early while waiting for ' +
+                    'chrome.tabs.executeScript. Try increasing the timeout.');
+            } else {
+                loaded = true;
+
+                initiateCapture(tab, function () {
+                    callback(null, getBlobs(screenshots));
+                });
+            }
+        });
+
+        window.setTimeout(function () {
+            if (!loaded) {
+                timedOut = true;
+                callback('execute timeout');
+            }
+        }, timeout);
     }
 
-
     return {
-        captureToBlobs: captureToBlobs,
-        captureToFiles: captureToFiles
+        captureToBase64: captureToBase64,
+        captureToBlobs: captureToBlobs
     };
 
 })();

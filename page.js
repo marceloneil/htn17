@@ -1,4 +1,3 @@
-
 var CAPTURE_DELAY = 150;
 
 function onMessage(data, sender, callback) {
@@ -18,7 +17,9 @@ if (!window.hasScreenCapturePage) {
 }
 
 function max(nums) {
-    return Math.max.apply(Math, nums.filter(function(x) { return x; }));
+    return Math.max.apply(Math, nums.filter(function (x) {
+        return x;
+    }));
 }
 
 function getPositions(callback) {
@@ -90,7 +91,9 @@ function getPositions(callback) {
     console.log('windowWidth', windowWidth, 'windowHeight', windowHeight);
     console.log('xDelta', xDelta, 'yDelta', yDelta);
     var arText = [];
-    arrangements.forEach(function(x) { arText.push('['+x.join(',')+']'); });
+    arrangements.forEach(function (x) {
+        arText.push('[' + x.join(',') + ']');
+    });
     console.log('arrangements', arText.join(', '));
     /**/
 
@@ -114,7 +117,8 @@ function getPositions(callback) {
         }
 
         var next = arrangements.shift(),
-            x = next[0], y = next[1];
+            x = next[0],
+            y = next[1];
 
         window.scrollTo(x, y);
 
@@ -122,7 +126,7 @@ function getPositions(callback) {
             msg: 'capture',
             x: window.scrollX,
             y: window.scrollY,
-            complete: (numArrangements-arrangements.length)/numArrangements,
+            complete: (numArrangements - arrangements.length) / numArrangements,
             windowWidth: windowWidth,
             totalWidth: fullWidth,
             totalHeight: fullHeight,
@@ -132,11 +136,11 @@ function getPositions(callback) {
         // console.log('>> DATA', JSON.stringify(data, null, 4));
 
         // Need to wait for things to settle
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             // In case the below callback never returns, cleanup
-            var cleanUpTimeout = window.setTimeout(cleanUp, 1250);
+            var cleanUpTimeout = window.setTimeout(cleanUp, 2000);
 
-            chrome.runtime.sendMessage(data, function(captured) {
+            chrome.runtime.sendMessage(data, function (captured) {
                 window.clearTimeout(cleanUpTimeout);
 
                 if (captured) {

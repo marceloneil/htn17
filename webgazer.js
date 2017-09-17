@@ -10412,6 +10412,7 @@ var mosseFilterResponses = function() {
     var showGazeDot = false;
     //debug element (starts offscreen)
     var gazeDot = document.createElement('div');
+    gazeDot.id = 'gazedot';
     gazeDot.style.position = 'fixed';
     gazeDot.style.zIndex = 99999;
     gazeDot.style.left = '-5px'; //'-999em';
