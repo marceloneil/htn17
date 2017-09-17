@@ -102,6 +102,7 @@
         border: none;
         font-size: 15px;
         text-align: center;
+          width: 300px;
       }
 
       .button:hover {
@@ -111,6 +112,11 @@
       .black {
         background-color: #2e2e2e;
         color: white;
+      }
+
+      .green{
+          background-color: #1ff366;
+          color: white;
       }
 
       .ripple {
@@ -154,6 +160,15 @@
           opacity: 0;
         }
       }
+        .main_title{
+            text-align: center;
+            font-size: 30px;
+        }
+        .left-format{
+            font-weight: 400;
+            color: #bd990c;
+
+        }
 
     </style>
 
@@ -171,17 +186,15 @@
   <body>
     <script src="api.js"></script>
       <script src="popup.js"></script>
-    <h1>Background Color Changer</h1>
-    <div id="container">
-        <span>Choose a color</span>
-        <select id="dropdown">
-            <option selected disabled hidden value=''></option>
-            <option value="white">White</option>
-            <option value="pink">Pink</option>
-            <option value="green">Green</option>
-            <option value="yellow">Yellow</option>
-        </select>
+    <h1 class="main_title">OPEN EYE</h1>
+    <hr>
+    <div>
+        <div id="container">
+            <h1>Balance:</h1>
+            <h1 id="balance" class="left-format">100 ICN</h1>
+        </div>
     </div>
+    <hr>
     <div id="container">
       <h1>Camera: </h1>
       <label class="switch">
@@ -189,15 +202,20 @@
         <span class="slider round"></span>
       </label>
     </div>
-    <div id="container">
-        <h1>Developer Mode: </h1>
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
+    <div>
+        <button class="button black" id="options">Create Wallet</button>
     </div>
     <div>
-      <button class="button black" id="options">Options</button>
+        <button class="button black" id="options">Open Wallet</button>
+    </div>
+    <div>
+        <button class="button black" id="options">Delete Wallet</button>
+    </div>
+    <div>
+      <button class="button black" id="options">Analytics</button>
+    </div>
+    <div>
+        <button class="button green" id="options">Withdraw</button>
     </div>
   </body>
 
