@@ -103,7 +103,6 @@ function saveBackgroundColor(url, color) {
 // to a document's origin. Also, using chrome.storage.sync instead of
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
-var state = 1;
 document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.captureVisibleTab(function(screenshotUrl) {
     //alert(screenshotUrl);
@@ -112,6 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
     var dropdown = document.getElementById('dropdown');
     var options = document.getElementById('options');
     var toggle = document.getElementById('toggle');
+    var state = false;
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {get: "state"}, function(response) {
+            state = response;
+            document.getElementById("toggle").checked = state;
+            console.log(state);
+        });
+    });
+
+
     // Load the saved background color for this page and modify the dropdown
     // value, if needed.
     getSavedBackgroundColor(url, (savedColor) => {
@@ -139,17 +148,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     toggle.addEventListener('click', () => {
-        if(state){
-            state = 0;
-            startCamera();
+        console.log("click");
+        if(!state){
+            state = true;
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {get: "start"}, function(response) {
+                    console.log(response.message)
+                });
+
+            });
         }else{
-            state=1;
-            endCamera();
+            state = false;
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {get: "stop"}, function(response) {
+                    console.log(response.message);
+                    if(response.message){
+                        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                            chrome.tabs.sendMessage(tabs[0].id, {get: 'data'}, function(data) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'https://htn17-processing-kshen3778.c9users.io/createHeatMap',
+                                    data: JSON.stringify(data),
+                                    success: success,
+                                    contentType: "application/json",
+                                    dataType: 'json'
+                                });
+
+                                function success(response) {
+                                    console.log(response);
+                                }
+                            })
+                        });
+                    }
+                });
+            });
         }
     });
 
   });
 });
+
+
 
 // $('.button').mousedown(function (e) {
 //     var target = e.target;
