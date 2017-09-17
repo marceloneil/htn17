@@ -166,20 +166,26 @@
         text-align: center;
     }
 
+    #imageView{
+        width: 100%;
+    }
+
+
+
 </style>
-<head><title>My Test Extension Options</title></head>
+<head><title>My Test Extension Options</title>
+    <script src="firebase.js"></script>
+    <script src="jquery.min.js"></script>
+</head>
 <body>
 <h1> HEATMAP DATA</h1>
 <nav>
     <ul>
-        <li><a href="#">Select a website...<div id="down-triangle"></div></a>
-            <ul>
-                <li><a class="select">abc.com<div class="circle"></div></a></li>
-                <li><a class="select">def.com<div class="circle"></div></a></li>
-            </ul>
+        <li id="links"><a href="#">Select a website...<div id="down-triangle"></div></a>
         </li>
     </ul>
 </nav>
+
 <div class="slider">
     <input type="range" min="0" max="100" value="0" />
 </div>
