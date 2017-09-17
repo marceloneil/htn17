@@ -2,20 +2,29 @@
 window.CaptureAPI = (function() {
 
     function makeCall(someKindOfData){
-      alert(someKindOfData.imgData);
+
+      //alert(someKindOfData.imgData);
+      alert(someKindOfData.x);
+      alert(someKindOfData.y);
+      alert(someKindOfData.clock);
+      alert(someKindOfData.url);
+
+      var http = new XMLHttpRequest();
+      var url = "https://htn17-processing-kshen3778.c9users.io/createHeatMap";
+
+
+      http.open("POST", url, true);
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      http.send(JSON.stringify(someKindOfData));
+
+/*
       $.ajax({
           type: 'POST',
           url: 'https://htn17-processing-kshen3778.c9users.io/createHeatMap',
           data: JSON.stringify(someKindOfData),
-          success: success,
-          error: error,
           contentType: "application/json",
           dataType: 'json'
-      },success: function(result) {
-          alert(response);
-      },error: function(result) {
-          alert(response);
-      });
+      });*/
     }
 
 
