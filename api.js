@@ -8,13 +8,14 @@ window.CaptureAPI = (function() {
           url: 'https://htn17-processing-kshen3778.c9users.io/createHeatMap',
           data: JSON.stringify(someKindOfData),
           success: success,
+          error: error,
           contentType: "application/json",
           dataType: 'json'
+      },success: function(result) {
+          alert(response);
+      },error: function(result) {
+          alert(response);
       });
-
-      function success(response) {
-          console.log(response);
-      }
     }
 
 
