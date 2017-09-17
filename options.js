@@ -1,20 +1,7 @@
 var images;
 
-document.getElementsByTagName('input')[0].addEventListener("input", function() {
-    var min = this.min;
-    var max = this.max;
-    var val = this.value;
-    console.log(val);
-    this.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%';
-
-    if (this.value == 0) {
-        this.setAttribute("class", "zero-input");
-    } else {
-        this.setAttribute("class", "");
-    }
-
-}, false);
 var url =[];
+var source = [];
 window.onload = function(){
     var json;
     var o;
@@ -31,6 +18,7 @@ window.onload = function(){
         json = snap.val();
         console.log(JSON.stringify(snap.val()));
         //console.log(snap.val().result.heatmap);
+        console.log(snap.val());
         //url = snap.val().result.heatmap;
         //console.log(url);
         //changeImage(url);
@@ -40,7 +28,8 @@ window.onload = function(){
         for (var key in json) {
             if (json.hasOwnProperty(key)) {
                 console.log(key + ": " + json[key]);
-                url.push(json[key].heatmap)
+                url.push(json[key].heatmap);
+                source.push(json[key].siteurl);
             }
         }
         document.getElementById('links').appendChild(makeUL(url));
@@ -74,7 +63,7 @@ function makeUL(array) {
         item2.setAttribute("class", "button-group");
 
         // Set its contents:
-        item2.appendChild(document.createTextNode(i+1));
+        item2.appendChild(document.createTextNode(source[i]));
         item2.appendChild(item3);
         item.appendChild(item2);
         // Add it to the list:
